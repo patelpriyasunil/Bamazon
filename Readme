@@ -1,0 +1,19 @@
+Bamazon is Amazon-like storefront. It takes in orders from customers and deplete stock from the store's inventory.
+
+The app would first display all the products in Node with item IDs, product name, price and quantity available.
+Then it will prompt 2 questions:
+
+1. The first should ask them the ID of the product they would like to buy.
+2. The second message should ask how many units of the product they would like to buy.
+
+Once the customer has placed the order, the application would check if the store has enough of the product to meet the customer's request.
+
+If not, the app would log the phrase Insufficient quantity!, and then prevent the order from going through.
+
+However, if the store does have enough of the product, it will fulfill the customer's order and log the total amount due.
+Once the customer's order is fulfilled it will update the quantity in Mysql Database
+
+- Video of the running app: https://drive.google.com/file/d/1Xl4pGYFEg_lXEs0TewvmScJtq4ip0W3H/view
+
+
+Technologies used: MySql, Node, JavaScript
