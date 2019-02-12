@@ -22,7 +22,7 @@ connection.connect(function(err){
 function listProducts(){
 	connection.query('SELECT * FROM products', function(err, res){
 		if (err) throw err;
-		console.log("********Welcome to Bamazon!*********" + " n\-------------------------------------------------------------------");
+		console.log("******** Welcome to Bamazon! *********" + " \n-------------------------------------------------------------------");
 
 		for(i=0;i<res.length;i++){
 			console.log("Item ID:" + res[i].id + "Product Name:" + res[i].ProductName + " Price: " + "$" + res[i].Price + "Quantity in Stock: " + res[i].StockQuantity)
@@ -36,29 +36,17 @@ function Start(){
 	inquirer.prompt([{
 		name: "selectId",
 		message: "What the ID of the product you wish to buy ?",
-		validate: function(value){
-			var valid = value.match(/^[0-9]+$/)
-			if(valid){
-				return true
-			}
-				return "Please enter a valid Item ID"
-		}
+		
 	},{
 		name:"selectQuantity",
 		message: "How many units would you like to buy?",
-		validate: function(value){
-			var valid = value.match(/^[0-9]+$/)
-			if(valid){
-				return true
-			}
-				return "Please enter a numerical value"
-		}
+		
 	}]).then(function(answer){
 	connection.query('SELECT * FROM products WHERE id = ?', [answer.selectId], function(err, res){
 		if(answer.selectQuantity > res[0].StockQuantity){
 
       
-			console.log("Sorry! This product is out of stock or does not have sufficient units to fulfill your order." + "\nPlease try again later.");
+			console.log("Sorry! Insufficient Quantity." + "\nPlease try again later.");
 			AnotherOrder();
 		}
 		else{
@@ -66,16 +54,13 @@ function Start(){
 			currentDepartment = res[0].DepartmentName;
 			console.log("Thank you for your order!" + "\n Total amount due: $" + amountOwed);
       
-      //update products table
-      
+    //   update Quantity
 			connection.query("UPDATE products SET ? Where ?", [{
 				StockQuantity: res[0].StockQuantity - answer.selectQuantity
 			},{
 				id: answer.selectId
 			}], function(err, res){});
-      //update departments table
       AnotherOrder();
-			updateQuantity();
 		
 		}
 	})
@@ -95,23 +80,8 @@ function AnotherOrder(){
 		else{
 			console.log("Thank you for shopping at Bamazon!");
 			connection.end();
+			
 		}
 	})
-};
-
-
-function updateQuantity(){
-	connection.query('SELECT * FROM departments WHERE DepartmentName = ?', [currentDepartment], function(err, res){
-		updateSales = res[0].TotalSales + amountOwed;
-		updateTable();
-	})
-};
-
-function updateTable(){
-		connection.query('UPDATE departments SET ? WHERE ?', [{
-		TotalSales: updateSales
-	},{
-		DepartmentName: currentDepartment
-	}], function(err, res){});
 };
 listProducts();
